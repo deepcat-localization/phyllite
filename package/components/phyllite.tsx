@@ -1,23 +1,32 @@
 import React from "react";
 import { createEditor } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
+import { Slate, withReact } from "slate-react";
 import { withHistory } from "slate-history";
+import { initialValue } from "../constants/initial-value";
+import { Plugins } from "../types";
+import { PluginsContext } from "../hooks/use-plugins";
 
-const initValue = [
-  {
-    type: "paragraph",
-    children: [{ text: "Hello, world!" }],
-  },
-];
+type Props = {
+  children: React.ReactNode;
+  plugins?: Plugins;
+  pluginsDisabled?: boolean;
+};
 
-export const Phyllite = () => {
+export const Phyllite = ({ children, plugins, pluginsDisabled }: Props) => {
   const editor = React.useMemo(
     () => withHistory(withReact(createEditor())),
     [],
   );
   return (
-    <Slate editor={editor} initialValue={initValue}>
-      <Editable />
+    <Slate editor={editor} initialValue={initialValue}>
+      <PluginsContext.Provider
+        value={{
+          plugins: plugins || {},
+          pluginsDisabled: pluginsDisabled || false,
+        }}
+      >
+        {children}
+      </PluginsContext.Provider>
     </Slate>
   );
 };
