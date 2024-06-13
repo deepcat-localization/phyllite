@@ -3,21 +3,21 @@ import { Phyllite } from "../../../../package/components/phyllite";
 import { PhylliteContent } from "../../../../package/components/phyllite-content";
 import { useFindReplacePlugin } from "./find-replace-plugin";
 import Leaf from "./leaf";
+import { PhyllitePlugin } from "../../../../package/types/phyllite-plugin";
 
 export default function FindReplace() {
   const [find, setFind] = useState<string>("world");
   const [replace, setReplace] = useState<string>("");
   const plugins = {
     "find-replace": {
-      key: "find-replace",
-      hook: useFindReplacePlugin,
       props: {
         find,
         replace,
         setFind,
         setReplace,
       },
-    },
+      hook: useFindReplacePlugin,
+    } as PhyllitePlugin<unknown, unknown>,
   };
   return (
     <main className="w-full h-screen p-10 flex flex-col gap-2">

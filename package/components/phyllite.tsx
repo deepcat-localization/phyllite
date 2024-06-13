@@ -3,12 +3,12 @@ import { createEditor } from "slate";
 import { Slate, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import { initialValue } from "../constants/initial-value";
-import { Plugins } from "../types";
+import { PhyllitePluginContainer } from "../types/phyllite-plugin";
 import { PluginsContext } from "../hooks/use-plugins";
 
 type Props = {
   children: React.ReactNode;
-  plugins?: Plugins;
+  plugins?: PhyllitePluginContainer;
   pluginsDisabled?: boolean;
 };
 

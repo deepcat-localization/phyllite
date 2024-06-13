@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import { Plugins } from "../types";
+import { PhyllitePluginContainer } from "../types/phyllite-plugin";
 
 export const PluginsContext = createContext<{
-  plugins: Plugins;
+  plugins: PhyllitePluginContainer;
   pluginsDisabled: boolean;
 }>({
   plugins: {},
@@ -25,10 +25,11 @@ export function usePlugins() {
     };
   });
 
-  const customProps = pluginReturns.map((pluginReturn) => {
-    return {
-      key: pluginReturn.key,
-      ...pluginReturn.customProps,
+  let customProps: Record<string, unknown> = {};
+  pluginReturns.forEach((pluginReturn) => {
+    customProps = {
+      ...customProps,
+      [pluginReturn.key]: pluginReturn.customProps,
     };
   });
 
