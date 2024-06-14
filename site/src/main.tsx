@@ -5,6 +5,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import FindReplace from "./examples/find-replace/index.tsx";
 import HighlightSingleTerm from "./examples/highlight-single-term/index.tsx";
+import IndentList from "./examples/indent-list/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
     children: [
       { path: "find-replace", element: <FindReplace /> },
       { path: "highlight-single-term", element: <HighlightSingleTerm /> },
+      { path: "indent-list", element: <IndentList /> },
     ],
   },
 ]);

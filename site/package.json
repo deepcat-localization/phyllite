@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@prezly/slate-lists": "^0.107.0",
     "clsx": "^2.1.1",
     "is-hotkey": "^0.2.0",
     "react": "^18.2.0",
