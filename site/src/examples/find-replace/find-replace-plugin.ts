@@ -1,66 +1,48 @@
+import { Text } from "slate";
+import { createPluginFactory } from "../../../../package/utils/create-plugin-factory";
+import { Decorate } from "../../../../package/types/phyllite-plugin";
 import React from "react";
-import {
-  Decorate,
-  PhyllitePlugin,
-} from "../../../../package/types/phyllite-plugin";
-import { Text, Range, Editor } from "slate";
-import { useSlateSelection, useSlate } from "slate-react";
-import { isHotkey } from "is-hotkey";
 
-export type FindReplaceProps = {
+type FindReplaceProps = {
   find: string;
-  replace: string;
   setFind: React.Dispatch<React.SetStateAction<string>>;
+  replace: string;
   setReplace: React.Dispatch<React.SetStateAction<string>>;
 };
-export type FindReplaceCustomProps = void;
 
-export const FIND_REPLACE_KEY = "find-replace";
+export const createFindReplacePlugin = createPluginFactory({
+  key: "find-replace",
+  hook: (props) => {
+    const decorate: Decorate<{ highlight: boolean }> = (nodeEntry) => {
+      const [node, path] = nodeEntry;
+      // Important: We need to cast props to FindReplaceProps
+      const { find } = props as FindReplaceProps;
 
-export type FindReplacePlugin = PhyllitePlugin<
-  FindReplaceProps,
-  FindReplaceCustomProps
->;
+      if (!Text.isText(node) || find === "") return [];
 
-export const useFindReplacePlugin: FindReplacePlugin["hook"] = (props) => {
-  const selection = useSlateSelection();
-  const editor = useSlate();
+      const text = node.text.toLowerCase();
+      const findLower = find.toLowerCase();
+      const ranges = [];
+      let index = text.indexOf(findLower);
 
-  const decorate: Decorate<{ [FIND_REPLACE_KEY]: boolean }> = (nodeEntry) => {
-    const [node, path] = nodeEntry;
-    const ranges = [];
-    // If the node is not a text node or the find prop is not set, return the ranges
-    if (!Text.isText(node) || !props.find) {
-      return [];
-    }
-    const text = node.text.toLowerCase();
-    const find = props.find.toLowerCase();
+      let count = 0;
+      while (index !== -1) {
+        if (count > 100) break;
+        count++;
+        ranges.push({
+          anchor: { path, offset: index },
+          focus: { path, offset: index + findLower.length },
+          highlight: true,
+        });
+        index = text.indexOf(findLower, index + findLower.length);
+      }
+      return ranges;
+    };
 
-    let index = text.indexOf(find);
-    while (index !== -1) {
-      ranges.push({
-        anchor: { path, offset: index },
-        focus: { path, offset: index + find.length },
-        [FIND_REPLACE_KEY]: true,
-      });
-      index = text.indexOf(find, index + find.length);
-    }
-    return ranges;
-  };
-
-  return {
-    editableProps: {
-      decorate: decorate,
-      onKeyDown: (event) => {
-        if (isHotkey("mod+f", event)) {
-          event.preventDefault();
-          const selectedText =
-            selection &&
-            Range.isExpanded(selection) &&
-            Editor.string(editor, selection);
-          props.setFind(selectedText || "");
-        }
+    return {
+      editableProps: {
+        decorate,
       },
-    },
-  };
-};
+    };
+  },
+});

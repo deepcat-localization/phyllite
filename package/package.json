@@ -1,6 +1,6 @@
 {
   "name": "phyllite",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A rich text editor for React",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

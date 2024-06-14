@@ -1,24 +1,18 @@
 import { useState } from "react";
 import { Phyllite } from "../../../../package/components/phyllite";
 import { PhylliteContent } from "../../../../package/components/phyllite-content";
-import { useFindReplacePlugin } from "./find-replace-plugin";
 import Leaf from "./leaf";
-import { PhyllitePlugin } from "../../../../package/types/phyllite-plugin";
+import { createPlugins } from "../../../../package/utils/create-plugins";
+import { createFindReplacePlugin } from "./find-replace-plugin";
 
 export default function FindReplace() {
   const [find, setFind] = useState<string>("world");
   const [replace, setReplace] = useState<string>("");
-  const plugins = {
-    "find-replace": {
-      props: {
-        find,
-        replace,
-        setFind,
-        setReplace,
-      },
-      hook: useFindReplacePlugin,
-    } as PhyllitePlugin<unknown, unknown>,
-  };
+
+  const plugins = createPlugins([
+    createFindReplacePlugin({ find, setFind, replace, setReplace }),
+  ]);
+
   return (
     <main className="w-full h-screen p-10 flex flex-col gap-2">
       <h1 className="text-2xl font-bold">Find and Replace</h1>
